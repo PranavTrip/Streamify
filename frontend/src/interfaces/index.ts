@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface SignupData {
     email: string;
     password: string;
@@ -14,4 +16,8 @@ export interface OnboardingData {
     learningLanguage: string;
     location: string;
     profilePic: string;
+}
+export interface LayoutProps {
+    showSidebar?: boolean
+    children: ReactNode
 }

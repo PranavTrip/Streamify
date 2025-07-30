@@ -9,9 +9,12 @@ import CallPage from "./pages/CallPage"
 import { Toaster } from "react-hot-toast"
 import PageLoader from "./components/PageLoader"
 import useAuthuser from "./hooks/useAuthuser"
+import Layout from "./components/Layout"
+import { useSelector } from "react-redux"
 
 const App = () => {
   const { isLoading, authUser } = useAuthuser()
+  const theme = useSelector((state: any) => state.theme.theme)
 
   const isAuthenticated = Boolean(authUser)
   const isOnboarded = authUser?.isOnboarded
@@ -19,13 +22,15 @@ const App = () => {
   if (isLoading) return <PageLoader />
 
   return (
-    <div className="h-screen">
+    <div className="h-screen" data-theme={theme}>
       <Routes>
         <Route
           path="/"
           element={
             isAuthenticated && isOnboarded ? (
-              <HomePage />
+              <Layout showSidebar={true}>
+                <HomePage />
+              </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
@@ -47,7 +52,9 @@ const App = () => {
           path="/notifications"
           element={
             isAuthenticated && isOnboarded ? (
-              <NotificationPage />
+              <Layout>
+                <NotificationPage />
+              </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
