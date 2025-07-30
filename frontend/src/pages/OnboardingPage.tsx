@@ -5,11 +5,12 @@ import toast from "react-hot-toast";
 import { completeOnboarding } from "../lib/api";
 import { CameraIcon, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
 import { LANGUAGES } from "../constants";
+import type { OnboardingData } from "../interfaces";
 
 const OnboardingPage = () => {
   const { authUser } = useAuthuser()
   const queryClient = useQueryClient()
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<OnboardingData>({
     fullName: authUser?.fullName || "",
     bio: authUser?.bio || "",
     nativeLanguage: authUser?.nativeLanguage || "",

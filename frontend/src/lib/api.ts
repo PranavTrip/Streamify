@@ -1,8 +1,13 @@
-import type { OnboardingData, SignupData } from "../interfaces";
+import type { LoginData, OnboardingData, SignupData } from "../interfaces";
 import { axiosInstance } from "./axios";
 
 export const signup = async (signupData: SignupData) => {
     const response = await axiosInstance.post('/auth/signup', signupData);
+    return response?.data;
+}
+
+export const login = async (loginData: LoginData) => {
+    const response = await axiosInstance.post('/auth/login', loginData);
     return response?.data;
 }
 
