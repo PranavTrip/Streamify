@@ -21,7 +21,7 @@ const SignUpPage = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] })
   })
 
-  const handleSignUp = (e: FormEventHandler<HTMLFormElement>) => {
+  const handleSignUp: FormEventHandler<HTMLFormElement> = (e) => {
     e?.preventDefault()
     mutate()
   }
@@ -45,7 +45,7 @@ const SignUpPage = () => {
           {/* ERROR MESSAGE IF ANY */}
           {error && (
             <div className="alert alert-error mb-4">
-              <span>{error?.response?.data?.message}</span>
+              <span>{(error as any)?.response?.data?.message}</span>
             </div>
           )}
 

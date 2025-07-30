@@ -26,17 +26,17 @@ const OnboardingPage = () => {
     },
     onError: (error) => {
       console.error(error)
-      toast.error(error?.response?.data?.message)
+      toast.error((error as any)?.response?.data?.message)
 
     }
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     onboardingMutation(formState)
   }
 
-  async function handleRandomAvatar(e) {
+  async function handleRandomAvatar() {
     const idx = Math.floor(Math.random() * 100) + 1;
     const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`
 
