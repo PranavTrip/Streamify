@@ -21,3 +21,25 @@ export interface LayoutProps {
     showSidebar?: boolean
     children: ReactNode
 }
+
+export interface Friend {
+    _id: string;
+    fullName: string;
+    profilePic: string;
+    nativeLanguage: string;
+    learningLanguage: string;
+};
+
+export interface FriendsCardProps {
+    friend: Friend;
+}
+
+export interface User {
+    _id: string;
+    fullName: string;
+    profilePic: string;
+    nativeLanguage: string;
+    learningLanguage: string;
+    location?: string;
+    bio?: string;
+}

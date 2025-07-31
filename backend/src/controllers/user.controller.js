@@ -23,7 +23,7 @@ export async function getRecommendedUsers(req, res) {
 export async function getMyFriends(req, res) {
     try {
         const user = await User.findById(req.user.id).select('friends')
-            .poplate('friends', 'fullName profilePic nativeLanguage learningLanguage');
+            .populate('friends', 'fullName profilePic nativeLanguage learningLanguage');
 
         res.status(200).json(user.friends);
     } catch (error) {
@@ -107,10 +107,10 @@ export async function acceptFriendRequest(req, res) {
 
 export async function getFriendRequests(req, res) {
     try {
-        const incomingRequest = await FriendRequest.find({ recipient: req.user.id, status: 'pending' })
+        const incomingRequests = await FriendRequest.find({ recipient: req.user.id, status: 'pending' })
             .populate('sender', 'fullName profilePic nativeLanguage learningLanguage');
 
-        const accpetedRequests = await FriendRequest.find({ sender: req.user.id, status: 'accepted' })
+        const acceptedRequests = await FriendRequest.find({ sender: req.user.id, status: 'accepted' })
             .populate('recipient', 'fullName profilePic');
 
         res.status(200).json({
