@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useEffect, useState } from "react";
-import { getOutgoingFriendRequests, getRecommendedUsers, getUserFriends, sendFriendRequests } from "../lib/api";
+import { useEffect, useMemo, useState } from "react";
+import { getOutgoingFriendRequests, getRecommendedUsers, getUserFriends, getUserMessages, sendFriendRequests } from "../lib/api";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 import FriendsCard, { getLanguageFlag } from "../components/FriendsCard";
 import NoFriendsFound from "../components/NoFriendsFound";
@@ -28,6 +28,11 @@ const HomePage = () => {
     queryFn: getOutgoingFriendRequests,
   })
 
+  const { data: incomingMessages } = useQuery({
+    queryKey: ["incomingMessages"],
+    queryFn: getUserMessages,
+  })
+
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequests,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendRequests"] }),
@@ -43,6 +48,15 @@ const HomePage = () => {
       setOutgoingRequestsIds(outgoingIds)
     }
   }, [outgoingFriendRequests])
+
+  const unreadMap = useMemo(() => {
+    const map: Record<string, number> = {};
+    incomingMessages?.forEach((item: { friendId: string; unreadMessages: number }) => {
+      map[item.friendId] = item.unreadMessages;
+    });
+    return map;
+  }, [incomingMessages]);
+
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -63,9 +77,15 @@ const HomePage = () => {
           <NoFriendsFound />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {friends.map((friend: Friend) => (
-              <FriendsCard key={friend._id} friend={friend} />
-            ))}
+            {friends?.map((friend: Friend) => {
+              const unreadCount = unreadMap[friend?._id] || 0;
+              return (
+                <div key={friend._id} className="relative space-y-2">
+                  <FriendsCard friend={friend} unreadCount={unreadCount} />
+                </div>
+              );
+            })}
+
           </div>
         )}
 

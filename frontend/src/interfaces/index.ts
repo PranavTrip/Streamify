@@ -32,6 +32,7 @@ export interface Friend {
 
 export interface FriendsCardProps {
     friend: Friend;
+    unreadCount: number
 }
 
 export interface User {

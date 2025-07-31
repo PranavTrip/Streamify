@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { acceptFriendRequest, getFriendRequests, getOutgoingFriendRequests, getUserFriends } from "../lib/api"
+import { acceptFriendRequest, getFriendRequests, getOutgoingFriendRequests, getUserFriends, getUserMessages } from "../lib/api"
 import FriendsCard from "../components/FriendsCard"
 import type { Friend } from "../interfaces"
 import NoFriendsFound from "../components/NoFriendsFound"
 import NoRequests from "../components/NoRequest"
+import { useMemo } from "react"
 
 const FriendsPage = () => {
     const queryClient = useQueryClient()
@@ -12,6 +13,10 @@ const FriendsPage = () => {
     const { data: friends = [], isLoading: loadingFriends } = useQuery({
         queryKey: ["friends"],
         queryFn: getUserFriends,
+    })
+    const { data: incomingMessages } = useQuery({
+        queryKey: ["incomingMessages"],
+        queryFn: getUserMessages,
     })
 
     // Sent Friend Requests
@@ -34,7 +39,13 @@ const FriendsPage = () => {
 
         }
     })
-
+    const unreadMap = useMemo(() => {
+        const map: Record<string, number> = {};
+        incomingMessages?.forEach((item: { friendId: string; unreadMessages: number }) => {
+            map[item.friendId] = item.unreadMessages;
+        });
+        return map;
+    }, [incomingMessages]);
 
     const incomingRequests = friendRequests?.incomingRequests;
 
@@ -52,9 +63,12 @@ const FriendsPage = () => {
                     <NoFriendsFound />
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {friends.map((friend: Friend) => (
-                            <FriendsCard key={friend._id} friend={friend} />
-                        ))}
+                        {friends.map((friend: Friend) => {
+                            const unreadCount = unreadMap[friend?._id] || 0;
+                            return (
+                                <FriendsCard key={friend._id} friend={friend} unreadCount={unreadCount} />
+                            )
+                        })}
                     </div>
                 )}
 

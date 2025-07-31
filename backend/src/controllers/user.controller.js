@@ -1,3 +1,4 @@
+import { getUserMessagesFromStream } from "../lib/stream.js";
 import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
 
@@ -128,11 +129,24 @@ export async function getFriendRequests(req, res) {
 export async function getOutgoingFriendRequests(req, res) {
     try {
         const outgoingRequests = await FriendRequest.find({ sender: req.user.id, status: 'pending' })
-        .populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
+            .populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
         res.status(200).json(outgoingRequests);
     } catch (error) {
         console.error('Error fetching outgoing friend requests:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
 
+    }
+}
+
+export async function getUserMessages(req, res) {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(req.user.id).select('friends')
+            .populate('friends', 'fullName profilePic nativeLanguage learningLanguage');
+        const messages = await getUserMessagesFromStream(userId, user.friends.map(friend => friend._id.toString()));
+        res.status(200).json(messages);
+    } catch (error) {
+        console.error('Error fetching user messages:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
     }
 }

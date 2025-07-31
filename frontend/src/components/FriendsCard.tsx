@@ -2,9 +2,12 @@ import { Link } from "react-router"
 import { LANGUAGE_TO_FLAG } from "../constants";
 import type { FriendsCardProps } from "../interfaces";
 
-const FriendsCard = ({ friend }: FriendsCardProps) => {
+const FriendsCard = ({ friend, unreadCount }: FriendsCardProps) => {
     return (
         <div className="card bg-base-200 hover:shadow-md transition-shadow">
+            {unreadCount > 0 && <span className="absolute top-0.5 right-0.5 grid min-h-[24px] min-w-[24px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-600 py-1 px-1 text-xs text-white">
+                {unreadCount}
+            </span>}
             <div className="card-body p-4">
                 {/* USER INFO */}
                 <div className="flex items-center gap-3 mb-3">
