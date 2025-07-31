@@ -7,6 +7,7 @@ import NoFriendsFound from "../components/NoFriendsFound";
 import { Link } from "react-router";
 import type { Friend, User } from "../interfaces";
 import { capitialize } from '../lib/utils'
+import toast from "react-hot-toast";
 
 const HomePage = () => {
   const queryClient = useQueryClient();
@@ -29,7 +30,8 @@ const HomePage = () => {
 
   const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequests,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendRequests"] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendRequests"] }),
+    onError: () => toast.error("A friend request already exists between you and this user. Please check your pending requests")
   })
 
   useEffect(() => {

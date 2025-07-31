@@ -11,6 +11,7 @@ import PageLoader from "./components/PageLoader"
 import useAuthuser from "./hooks/useAuthuser"
 import Layout from "./components/Layout"
 import { useSelector } from "react-redux"
+import FriendsPage from "./pages/FriendsPage"
 
 const App = () => {
   const { isLoading, authUser } = useAuthuser()
@@ -54,6 +55,18 @@ const App = () => {
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={true}>
                 <NotificationPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/friends"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <FriendsPage />
               </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
